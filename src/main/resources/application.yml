@@ -1,0 +1,19 @@
+#外部服务地址
+service:
+  #鉴权服务地址
+  permissionurl: http://t.c.haier.net/me
+  #鉴权服务主机
+  permissionhost: t.c.haier.net
+  #权限服务
+  authorityurl:  http://10.138.40.222:9090/openInterface/application/projectInfo?directorId=
+  #业务服务地址，告警板后台服务
+  alertstationurl: http://localhost:8081/api/
+  #告警站转换器参数
+  alertstationconverter:
+    - startsAt
+    - endsAt
+    - lastNotifyTime
+    - lastReceiveTime
+
+server:
+  port: 8082
