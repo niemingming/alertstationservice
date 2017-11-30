@@ -116,6 +116,7 @@ public class ApiService {
             }
         }
         try {
+//            System.out.println(gson.toJson(queryJson));
             JsonObject invokRes = sendPost(endpoint,gson.toJson(queryJson));
             invokRes.addProperty("currentTime",new Date().getTime()/1000);
             writeInvokeResult(invokRes,response);
@@ -518,10 +519,11 @@ public class ApiService {
             //表示传入了项目，需要校验有没有查询该项目的权限
             if (query.get("project") != null){
                 //目前只至此字符串和数组两种方式。
-                if (query.get("project").isJsonPrimitive()
-                        &&!projectFilter.contains(query.get("project"))) {
+                if (query.get("project").isJsonPrimitive()) {
                     //如果为字符串，且不被包含，name该条件不应该传入
-                    query.addProperty("project","");
+                    if (!projectFilter.contains(query.get("project"))) {
+                        query.addProperty("project","");
+                    }
                 }else if (query.get("project").isJsonArray()) {
                     //如果为数组，需要遍历判断
                     JsonArray custormPros = query.get("project").getAsJsonArray();

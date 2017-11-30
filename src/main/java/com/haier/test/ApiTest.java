@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class ApiTest {
 
-    private static String host = "10.138.16.192";
+    private static String host = "localhost";
 
     public static void main(String[] args) throws IOException {
 //        testPermission();
@@ -105,8 +105,8 @@ public class ApiTest {
         stringBuilder.append("{")
                 .append("   pageinfo:{currentPage:1,pageSize:7},")
                 .append("  query:{")
-                .append(" \"project\":[\"HMMS\",\"HDYBC\"],")
-                .append("   \"startsAt\":[\"2017-11-27\",\"2017-11-30 15:54:22\"]")
+                .append(" \"project\":\"HMMS\",")
+                .append("   \"startsAt\":[\"2017-11-28 12:43:44\",\"2017-11-30 15:54:22\"]")
                 .append("  }")
                 .append("}");
         StringEntity stringEntity = new StringEntity(stringBuilder.toString());
