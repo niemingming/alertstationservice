@@ -22,7 +22,7 @@ public class ApiTest {
 //        testPermission();
 //        queryList();
 //        queryById();
-        queryHistoryList();
+//        queryHistoryList();
 //        queryHistoryById();
 //        searchHistoryList();
 //        queryGroup();
@@ -32,7 +32,7 @@ public class ApiTest {
 //        queryCode("queryAlertCategories");
 //        queryCode("queryAlertTypes");
 //        queryCode("queryAlertCode");
-//        queryCode("queryProjectDict");
+        queryCode("queryProjectDict");
     }
     /**
      * @description 校验登录信息验证方法
