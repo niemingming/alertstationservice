@@ -100,7 +100,9 @@ public class ApiService {
             writeNoPermission(checkResult,response);
             return;
         }
-        if (queryJson.get("query").isJsonObject()){
+        //如果有过滤条件才处理
+        if (queryJson.get("query") != null
+                && queryJson.get("query").isJsonObject()){
             //处理日期格式
             alertStationConverter.convertParam(queryJson.get("query").getAsJsonObject());
         }
