@@ -495,6 +495,7 @@ public class ApiService {
             queryJson.add("query",new JsonObject());
         }
         JsonObject query = queryJson.get("query").getAsJsonObject();
+
         //获取人员相关项目
         String endpoint = serviceConfiguration.getAuthorityurl() + info;
         JsonObject projects = sendGet(endpoint);
@@ -506,14 +507,45 @@ public class ApiService {
                 String pro = "";
                 //判断是否由分组简称，如果有用分组，否则用项目简称
                 if (!project.get("projectMachineAbbreviated").isJsonNull()
-                        && !"".equals(project.get("projectMachineAbbreviated"))) {
+                        && !"".equals(project.get("projectMachineAbbreviated").getAsString())) {
                     pro = project.get("projectMachineAbbreviated").getAsString();
                 }else if (project.get("projectAlmAbbreviated") != null){
                     pro = project.get("projectAlmAbbreviated").getAsString();
                 }
                 projectFilter.add(pro);
             }
-            query.add("project",projectFilter);
+            //判断有没有传递项目条件，如果传入了，那么就以传入为准。不在附加
+            //表示传入了项目，需要校验有没有查询该项目的权限
+            if (query.get("project") != null){
+                //目前只至此字符串和数组两种方式。
+                if (query.get("project").isJsonPrimitive()
+                        &&!projectFilter.contains(query.get("project"))) {
+                    //如果为字符串，且不被包含，name该条件不应该传入
+                    query.addProperty("project","");
+                }else if (query.get("project").isJsonArray()) {
+                    //如果为数组，需要遍历判断
+                    JsonArray custormPros = query.get("project").getAsJsonArray();
+                    for (int j = custormPros.size() - 1; j >= 0; j-- ){
+                        try{
+                            if (!projectFilter.contains(custormPros.get(j))){
+                                custormPros.remove(j);
+                            }
+                        }catch (Exception e){
+                            //出现异常，表示异常数据
+                            custormPros.remove(j);
+                        }
+                    }
+                }else {
+                    //其他情况下认为，要查询的这次数据没有记录。
+                    query.addProperty("project","");
+                }
+                return;
+            }else {
+                query.add("project",projectFilter);
+            }
+        }else if (query.get("project") != null){
+            //无项目权限，但是传入了项目条件，需要去除
+            query.addProperty("projecct","");
         }
     }
 

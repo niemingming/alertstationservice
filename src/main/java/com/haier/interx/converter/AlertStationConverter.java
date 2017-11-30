@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class AlertStationConverter implements  QueryParamConverter{
     /*日期格式串*/
-    private String format = "yyyy-MM-dd";
+    private String format = "yyyy-MM-dd HH:mm:ss";
     @Autowired
     private ServiceConfiguration serviceConfiguration;
 
@@ -75,7 +75,7 @@ public class AlertStationConverter implements  QueryParamConverter{
      * @author Niemingming
      */
     private Long getDateUnixSecond(String datestr) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format.substring(0,Math.min(format.length(),datestr.length())));
         try {
             Date date = simpleDateFormat.parse(datestr);
             return date.getTime()/1000;

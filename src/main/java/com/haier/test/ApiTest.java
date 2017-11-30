@@ -15,12 +15,16 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ApiTest {
 
+    private static String host = "10.138.16.192";
+
     public static void main(String[] args) throws IOException {
 //        testPermission();
-//        queryList();
+        queryList();
 //        queryById();
 //        queryHistoryList();
 //        queryHistoryById();
@@ -32,7 +36,9 @@ public class ApiTest {
 //        queryCode("queryAlertCategories");
 //        queryCode("queryAlertTypes");
 //        queryCode("queryAlertCode");
-        queryCode("queryProjectDict");
+//        queryCode("queryProjectDict");
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        System.out.println(simpleDateFormat.format(new Date()));
     }
     /**
      * @description 校验登录信息验证方法
@@ -73,19 +79,19 @@ public class ApiTest {
     public static  BasicCookieStore getCookieStore(){
         BasicCookieStore store = new BasicCookieStore();
         BasicClientCookie cookie = new BasicClientCookie("csid","01239B0814D1E570E3218C13FF750378");
-        cookie.setDomain("localhost");
+        cookie.setDomain(host);
         store.addCookie(cookie);
         cookie = new BasicClientCookie("JSESSIONID","0FCC838A792247F83209B0DC809CD67C");
-        cookie.setDomain("localhost");
+        cookie.setDomain(host);
         store.addCookie(cookie);
         cookie = new BasicClientCookie("msid","b2f6fd7dZ6328f704Z160056e3a40Z933e");
-        cookie.setDomain("localhost");
+        cookie.setDomain(host);
         store.addCookie(cookie);
         cookie = new BasicClientCookie("gr_user_id","b3af81ba-bf0d-4f42-9ff0-b72f452dbc23");
-        cookie.setDomain("localhost");
+        cookie.setDomain(host);
         store.addCookie(cookie);
         cookie = new BasicClientCookie("Hm_lvt_82116c626a8d504a5c0675073362ef6f","1511415004");
-        cookie.setDomain("localhost");
+        cookie.setDomain(host);
         store.addCookie(cookie);
 
         return store;
@@ -93,14 +99,14 @@ public class ApiTest {
 
     public  static  void queryList() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpPost post = new HttpPost("http://localhost:8082/api/queryAlertingList");
+        HttpPost post = new HttpPost("http://" + host + ":8082/api/queryAlertingList");
         //不分页查询，列表查询为POST请求方式，条件为project=
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{")
-                .append("   pageinfo:{currentPage:1,pageSize:1},")
+                .append("   pageinfo:{currentPage:1,pageSize:7},")
                 .append("  query:{")
-//                .append(" \"project\":[\"project1\",\"project2\"],")
-                .append("   \"startsAt\":[\"2017-11-27\",\"2017-11-29\"]")
+                .append(" \"project\":[\"HMMS\",\"HDYBC\"],")
+                .append("   \"startsAt\":[\"2017-11-27\",\"2017-11-30 15:54:22\"]")
                 .append("  }")
                 .append("}");
         StringEntity stringEntity = new StringEntity(stringBuilder.toString());
@@ -112,7 +118,7 @@ public class ApiTest {
 
     public static void queryById() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpGet get = new HttpGet("http://localhost:8082/api/queryAlertingById/247D78214DCCD7FE830EC039F2B310C4");
+        HttpGet get = new HttpGet("http://" + host + ":8082/api/queryAlertingById/A1D75013EDF2B76D9A91310B46CDCBEC");
         HttpResponse response = client.execute(get);
         HttpEntity res = response.getEntity();
         System.out.println(EntityUtils.toString(res));
@@ -120,13 +126,13 @@ public class ApiTest {
 
     public static void queryHistoryList() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpPost post = new HttpPost("http://localhost:8082/api/queryHistoryList");
+        HttpPost post = new HttpPost("http://" + host + ":8082/api/queryHistoryList");
         //不分页查询，列表查询为POST请求方式，条件为project=
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{")
-                .append("   pageinfo:{currentPage:1,pageSize:1},")
+                .append("   pageinfo:{currentPage:1,pageSize:2},")
                 .append("  query:{")
-//                .append("  \"project\":[\"JHZX1\",\"HDYBC\"]")
+                .append("  \"project\":[\"JHZX\",\"HDYBC\"],")
                 .append("   \"startsAt\":\"2017-11-27\"")
                 .append("  }")
                 .append("}");
@@ -139,7 +145,7 @@ public class ApiTest {
 
     public static void queryHistoryById() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpGet get = new HttpGet("http://localhost:8082/api/queryHistoryById/alert-201711/0D816460CAC76B54C94D49D8D7600428-1512037898");
+        HttpGet get = new HttpGet("http://" + host + ":8082/api/queryHistoryById/alert-201711/5113A06C19315B264C33D61068966EFA-1512036158");
         HttpResponse response = client.execute(get);
         HttpEntity res = response.getEntity();
         System.out.println(EntityUtils.toString(res));
@@ -147,7 +153,7 @@ public class ApiTest {
 
     public static void  searchHistoryList() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpGet get = new HttpGet("http://localhost:8082/api/searchHistoryList/tcp?currentPage=3&pageSize=2");
+        HttpGet get = new HttpGet("http://" + host + ":8082/api/searchHistoryList/连接数?currentPage=1&pageSize=2");
         HttpResponse response = client.execute(get);
         HttpEntity res = response.getEntity();
         System.out.println(EntityUtils.toString(res));
@@ -155,12 +161,12 @@ public class ApiTest {
 
     public  static  void queryGroup() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpPost post = new HttpPost("http://localhost:8082/api/queryAlertingByGroup");
+        HttpPost post = new HttpPost("http://" + host + ":8082/api/queryAlertingByGroup");
         //不分页查询，列表查询为POST请求方式，条件为project=
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{")
                 .append("  query:{")
-//                .append(" \"project\":[\"project1\",\"project2\"]")
+                .append(" \"project\":[\"project1\",\"project2\",\"HDYBC\",\"HMMS\"]")
                 .append("  },")
                 .append(" group:[\"project\"]")
                 .append("}");
@@ -173,7 +179,7 @@ public class ApiTest {
 
     public static void queryLevelCode() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpGet get = new HttpGet("http://localhost:8082/api/queryAlertLevels");
+        HttpGet get = new HttpGet("http://" + host + ":8082/api/queryAlertLevels");
         HttpResponse response = client.execute(get);
         HttpEntity res = response.getEntity();
         System.out.println(EntityUtils.toString(res));
@@ -181,7 +187,7 @@ public class ApiTest {
 
     public static  void queryCode(String uri) throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpGet get = new HttpGet("http://localhost:8082/api/" + uri);
+        HttpGet get = new HttpGet("http://" + host + ":8082/api/" + uri);
         HttpResponse response = client.execute(get);
         HttpEntity res = response.getEntity();
         System.out.println(EntityUtils.toString(res));
