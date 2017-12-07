@@ -118,7 +118,7 @@ public class ApiService {
             }
         }
         try {
-//            System.out.println(gson.toJson(queryJson));
+            System.out.println(gson.toJson(queryJson));
             JsonObject invokRes = sendPost(endpoint,gson.toJson(queryJson));
             invokRes.addProperty("currentTime",new Date().getTime()/1000);
             writeInvokeResult(invokRes,response);
@@ -614,6 +614,7 @@ public class ApiService {
         try {
             HttpResponse response = client.execute(get);
             if (response.getStatusLine().getStatusCode() >= 400){
+                get.abort();
                 result.hasPermission = false;
                 result.info = "登录信息有误，请重新登录！";
                 return result;
@@ -669,8 +670,13 @@ public class ApiService {
         request.setConfig(config);
         try{
             HttpResponse response = client.execute(request);
+            //如果连接失败，我们需要显示的通知终止连接
+            if (response.getStatusLine().getStatusCode() != 200){
+                request.abort();
+            }
             return new Gson().fromJson(EntityUtils.toString(response.getEntity()),JsonObject.class);
         }catch (SocketTimeoutException e) {
+            request.abort();//主动关闭连接
             e.printStackTrace();
             //访问超时
             JsonObject timeout = new JsonObject();

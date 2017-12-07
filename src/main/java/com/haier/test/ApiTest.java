@@ -24,7 +24,8 @@ public class ApiTest {
 
     public static void main(String[] args) throws IOException {
 //        testPermission();
-        queryList();
+        for (int i = 0; i < 10000; i++)
+            queryList();
 //        queryById();
 //        queryHistoryList();
 //        queryHistoryById();
@@ -70,21 +71,17 @@ public class ApiTest {
     }
     /**
      * @description
-     * Hm_lvt_82116c626a8d504a5c0675073362ef6f:1511415004:null
-     * gr_user_id:b3af81ba-bf0d-4f42-9ff0-b72f452dbc23:null
-     * msid:b2f6fd7dZ6328f704Z160056e3a40Z933e:null
-     * csid:01239B0814D1E570E3218C13FF750378:null
-     * JSESSIONID:0FCC838A792247F83209B0DC809CD67C:null
+     * 1999BFE7158F927B3175D4A30D233305
      */
     public static  BasicCookieStore getCookieStore(){
         BasicCookieStore store = new BasicCookieStore();
-        BasicClientCookie cookie = new BasicClientCookie("csid","01239B0814D1E570E3218C13FF750378");
+        BasicClientCookie cookie = new BasicClientCookie("csid","6322937BDF90233F5C32CF9DF0BBA4FA");
         cookie.setDomain(host);
         store.addCookie(cookie);
-        cookie = new BasicClientCookie("JSESSIONID","0FCC838A792247F83209B0DC809CD67C");
+        cookie = new BasicClientCookie("JSESSIONID","51FD6243D6BB715B08768E8701920B03");
         cookie.setDomain(host);
         store.addCookie(cookie);
-        cookie = new BasicClientCookie("msid","b2f6fd7dZ6328f704Z160056e3a40Z933e");
+        cookie = new BasicClientCookie("msid","57154b95Z6328f704Z1600a738e36Z7a4a");
         cookie.setDomain(host);
         store.addCookie(cookie);
         cookie = new BasicClientCookie("gr_user_id","b3af81ba-bf0d-4f42-9ff0-b72f452dbc23");
@@ -106,7 +103,8 @@ public class ApiTest {
                 .append("   pageinfo:{currentPage:1,pageSize:7},")
                 .append("  query:{")
                 .append(" \"project\":\"HMMS\",")
-                .append("   \"startsAt\":[\"2017-11-28 12:43:44\",\"2017-11-30 15:54:22\"]")
+                .append("   \"startsAt\":[\"2017-11-28 12:43:44\",\"2017-11-30 15:54:22\"],")
+                .append(" \"alertCategory\":[\"machine\"]")
                 .append("  }")
                 .append("}");
         StringEntity stringEntity = new StringEntity(stringBuilder.toString());
@@ -118,7 +116,7 @@ public class ApiTest {
 
     public static void queryById() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpGet get = new HttpGet("http://" + host + ":8082/api/queryAlertingById/A1D75013EDF2B76D9A91310B46CDCBEC");
+        HttpGet get = new HttpGet("http://" + host + ":8082/api/queryAlertingById/C70C0CC99E24B87B5552578AB9FE4F70");
         HttpResponse response = client.execute(get);
         HttpEntity res = response.getEntity();
         System.out.println(EntityUtils.toString(res));
@@ -133,7 +131,7 @@ public class ApiTest {
                 .append("   pageinfo:{currentPage:1,pageSize:2},")
                 .append("  query:{")
                 .append("  \"project\":[\"JHZX\",\"HDYBC\"],")
-                .append("   \"startsAt\":\"2017-11-27\"")
+                .append("   \"startsAt\":[\"2017-11-30 19\",\"2017-11-30 23:59:59\"]")
                 .append("  }")
                 .append("}");
         StringEntity stringEntity = new StringEntity(stringBuilder.toString(),"UTF-8");
@@ -145,7 +143,7 @@ public class ApiTest {
 
     public static void queryHistoryById() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpGet get = new HttpGet("http://" + host + ":8082/api/queryHistoryById/alert-201711/5113A06C19315B264C33D61068966EFA-1512036158");
+        HttpGet get = new HttpGet("http://" + host + ":8082/api/queryHistoryById/alert-201711/F3D41251FB46DD2255B72CE34BDE502F-1512036158");
         HttpResponse response = client.execute(get);
         HttpEntity res = response.getEntity();
         System.out.println(EntityUtils.toString(res));
