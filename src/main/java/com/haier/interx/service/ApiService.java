@@ -221,7 +221,17 @@ public class ApiService {
     /**
      * @description 根据关键字查询历史告警记录
      * 查询格式
-     * GET /api/searchHistoryList/{searchstr}
+     * GET|POST /api/searchHistoryList/{searchstr}
+     * {
+     *     pageinfo:{//分页信息如果不传，表示不分页
+     *         currentPage:10, //当前第几页，从1开始计数
+     *         pageSize:10  //查询多少条，默认是10，
+     *     },
+     *     query:{//查询条件，遵循mongo的查询格式
+     *          alertname:"testalert",
+     *          "labels.job":"tomcat",
+     *          times:{$gte:"10"}
+     *     }
      * 返回数据格式：
      * {
      *     success:bool(true/false),//表示是否成功
@@ -236,11 +246,12 @@ public class ApiService {
      */
     @ResponseBody
     @RequestMapping("/searchHistoryList/{searchstr}")
-    public void searchHistoryList(@PathVariable String searchstr,@RequestParam(value = "currentPage",defaultValue = "1") int currentPage,
-                                  @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,HttpServletRequest request,HttpServletResponse response) {
+    public void searchHistoryList(@PathVariable String searchstr,@RequestBody String queryCon,
+                                  @RequestParam(value = "addpro",defaultValue = "1") String addpro,
+                                  HttpServletRequest request,HttpServletResponse response) {
         String endpoint = serviceConfiguration.getAlertstationurl() + "/searchHistoryList/"
-                + searchstr + "?currentPage=" + currentPage + "&pageSize=" + pageSize;
-        invokeGetRequest(endpoint,request,response);
+                + searchstr ;
+        invokePostRequest(endpoint,queryCon,addpro,request,response);
     }
 
     /**

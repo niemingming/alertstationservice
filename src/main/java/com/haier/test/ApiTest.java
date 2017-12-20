@@ -24,12 +24,12 @@ public class ApiTest {
 
     public static void main(String[] args) throws IOException {
 //        testPermission();
-        for (int i = 0; i < 10000; i++)
-            queryList();
+//        for (int i = 0; i < 10000; i++)
+//            queryList();
 //        queryById();
 //        queryHistoryList();
 //        queryHistoryById();
-//        searchHistoryList();
+        searchHistoryList();
 //        queryGroup();
 //        testgson();
 //        queryLevelCode();
@@ -56,7 +56,7 @@ public class ApiTest {
         HttpClientContext context = HttpClientContext.create();
         CookieStore cookieStore = new BasicCookieStore();
 //        context.setCookieStore(cookieStore);
-        BasicClientCookie cookie = new BasicClientCookie("csid","60C0286C1CB7A38EB9752A609E1760F1");
+        BasicClientCookie cookie = new BasicClientCookie("csid","6D975395247F0FA4B658B46193E180F6");
 //        context.getCookieStore().addCookie(cookie);
         cookie.setDomain("t.c.haier.net");
         cookieStore.addCookie(cookie);
@@ -75,16 +75,16 @@ public class ApiTest {
      */
     public static  BasicCookieStore getCookieStore(){
         BasicCookieStore store = new BasicCookieStore();
-        BasicClientCookie cookie = new BasicClientCookie("csid","6322937BDF90233F5C32CF9DF0BBA4FA");
+        BasicClientCookie cookie = new BasicClientCookie("csid","5356B5489080F28A6C224D1FE5A49CF9");
         cookie.setDomain(host);
         store.addCookie(cookie);
         cookie = new BasicClientCookie("JSESSIONID","51FD6243D6BB715B08768E8701920B03");
         cookie.setDomain(host);
         store.addCookie(cookie);
-        cookie = new BasicClientCookie("msid","57154b95Z6328f704Z1600a738e36Z7a4a");
+        cookie = new BasicClientCookie("msid","ba4b0254Z6328f704Z160714e49deZ9263");
         cookie.setDomain(host);
         store.addCookie(cookie);
-        cookie = new BasicClientCookie("gr_user_id","b3af81ba-bf0d-4f42-9ff0-b72f452dbc23");
+        cookie = new BasicClientCookie("gr_user_id","9989a998-34cf-42a6-8267-3b9da89b722d");
         cookie.setDomain(host);
         store.addCookie(cookie);
         cookie = new BasicClientCookie("Hm_lvt_82116c626a8d504a5c0675073362ef6f","1511415004");
@@ -151,8 +151,19 @@ public class ApiTest {
 
     public static void  searchHistoryList() throws IOException {
         HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
-        HttpGet get = new HttpGet("http://" + host + ":8082/api/searchHistoryList/连接数?currentPage=1&pageSize=2");
-        HttpResponse response = client.execute(get);
+        HttpPost post = new HttpPost("http://" + host + ":8082/api/searchHistoryList/node-tcp-conn-toomuch");
+        //不分页查询，列表查询为POST请求方式，条件为project=
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{")
+                .append("   pageinfo:{currentPage:1,pageSize:2},")
+                .append("  query:{")
+                .append("  \"project\":[\"JHZX\",\"HDYBC\"],")
+                .append("   \"startsAt\":[\"2017-11-30 19\",\"2017-12-30 23:59:59\"]")
+                .append("  }")
+                .append("}");
+        StringEntity stringEntity = new StringEntity(stringBuilder.toString(),"UTF-8");
+        post.setEntity(stringEntity);
+        HttpResponse response = client.execute(post);
         HttpEntity res = response.getEntity();
         System.out.println(EntityUtils.toString(res));
     }
