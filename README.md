@@ -450,10 +450,21 @@ GET /queryAlertingById/{id}//id为记录id
  }
  ```
  <h5 id="1.2.3">1.2.3.历史告警搜索</h5>
- 历史告警搜索是指，根据输入的关键字查询与之相关的历史告警数据，返回符合条件的前10条记录。访问的数据格式为：
+ 历史告警搜索是指，根据输入的关键字和条件查询与之相关的历史告警数据，返回符合条件的前10条记录。访问的数据格式为：
  
  ```
- GET /api/searchHistoryList/{searchstr}?currentPage=1&pageSize=10
+ POST /api/searchHistoryList/{searchstr}
+ {
+     pageinfo:{//分页信息如果不传，表示不分页
+         currentPage:10, //当前页码，从1开始
+         pageSize:10  //每页显示多少条，默认10条
+     },
+     query:{//查询条件，遵循mongo的查询格式
+          alertname:"testalert",
+          "endsAt":["2017-11-27","2017-11-29"], //支持查询日期范围，如果只有一个时间，表示从传入时间到当前的数据。
+           times:{$gte:"10"}
+      }
+ }
  ```
  返回的数据格式为：
  
@@ -475,30 +486,70 @@ GET /queryAlertingById/{id}//id为记录id
  我们用HTTPClient来模拟GET请求，查询包含tomcat字符串的记录：
  
  ```
- HttpClient client = HttpClients.createDefault();
- //不传参数表示第一页，前10条数据
- HttpGet get = new HttpGet("http://localhost:8081/api/searchHistoryList/tomcat");
- HttpResponse response = client.execute(get);
+ HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
+ HttpPost post = new HttpPost("http://" + host + ":8082/api/searchHistoryList/node-tcp-conn-toomuch");
+ //不分页查询，列表查询为POST请求方式，条件为project=
+ StringBuilder stringBuilder = new StringBuilder();
+ stringBuilder.append("{")
+     .append("   pageinfo:{currentPage:1,pageSize:2},")
+     .append("  query:{")
+     .append("  \"project\":[\"JHZX\",\"HDYBC\"],")
+     .append("   \"startsAt\":[\"2017-11-30 19\",\"2017-12-30 23:59:59\"]")
+     .append("  }")
+     .append("}");
+ StringEntity stringEntity = new StringEntity(stringBuilder.toString(),"UTF-8");
+ post.setEntity(stringEntity);
+ HttpResponse response = client.execute(post);
  HttpEntity res = response.getEntity();
  System.out.println(EntityUtils.toString(res));
  ```
  以上代码等价于：
  
  ```
- GET /api/searchHistoryList/tomcat?currentPage=1&pageSize=10
+ POST /api/searchHistoryList/node-tcp-conn-toomuch
+ {
+  pageinfo:{
+   currentPage:1,pageSize:2
+  },
+  query:{
+   project:["JHZX","HDYBC"],
+   startsAt:["2017-11-30 19","2017-12-30 23:59:59"]
+  }
+ }
  ```
  返回的数据格式为：
  
  ```
  {
   "success":true,
+  "currentTime":1513760297,
   "code":0,
-  currentTime:1511788207,
   "data":{
    "page":{
-     "total":32,
-     currentPage:1
+    "total":35,
+    "currentPage":1
    },
+   "list": [{
+    "startsAt":1513742437,
+    "endsAt":1513742827,
+    "lastNotifyTime":0,
+    "lastReceiveTime":1513742880,
+    "times":14,
+    "status":"resolve",
+    "level":"warning",
+    "project":"JHZX",
+    "suggest":"检查代码是否正常关闭连接/调整系统配置文件sysctl.conf",
+    "description":"10.159.37.167 fin_wait2类型TCP连接数超过5000达到5187.0",
+    "alertCategory":"machine",
+    "alertname":"node_tcp_conn_toomuch",
+    "value":5148.0,"reason":"并发请求过多/连接未正常关闭",
+    "labels":{
+     "instance":"10.159.37.167",
+     "state":"fin_wait2",
+     "job":"node"},
+     "_index":"alert-201712",
+     "_id":"29FCA02C114534838638783D4FC38BEA-1513742437"},
+     ···]}}
 ```
 <h4 id="1.3">1.3公共编码查询</h4>
 查询告警板中用到的公共编码。
