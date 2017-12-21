@@ -453,7 +453,7 @@ GET /queryAlertingById/{id}//id为记录id
  历史告警搜索是指，根据输入的关键字和条件查询与之相关的历史告警数据，返回符合条件的前10条记录。访问的数据格式为：
  
  ```
- POST /api/searchHistoryList/{searchstr}
+ POST /api/searchHistoryList/{searchstr}/static
  {
      pageinfo:{//分页信息如果不传，表示不分页
          currentPage:10, //当前页码，从1开始
@@ -487,7 +487,7 @@ GET /queryAlertingById/{id}//id为记录id
  
  ```
  HttpClient client = HttpClients.custom().setDefaultCookieStore(getCookieStore()).build();
- HttpPost post = new HttpPost("http://" + host + ":8082/api/searchHistoryList/node-tcp-conn-toomuch");
+ HttpPost post = new HttpPost("http://" + host + ":8082/api/searchHistoryList/node-tcp-conn-toomuch/static");
  //不分页查询，列表查询为POST请求方式，条件为project=
  StringBuilder stringBuilder = new StringBuilder();
  stringBuilder.append("{")
@@ -506,7 +506,7 @@ GET /queryAlertingById/{id}//id为记录id
  以上代码等价于：
  
  ```
- POST /api/searchHistoryList/node-tcp-conn-toomuch
+ POST /api/searchHistoryList/node-tcp-conn-toomuch/static
  {
   pageinfo:{
    currentPage:1,pageSize:2
